@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Бабушкин бизнес v0.3 Stable</title>
+    <link rel="stylesheet" href="style.css">
+    <!-- Подключение SDK Яндекс Игр (относительный путь) -->
+    <script src="/sdk.js"></script>
+</head>
+<body>
+    <div id="background"></div>
+    <div id="loadingScreen" class="loading-screen">
+        <div class="loading-window">
+            <div class="loading-icon">🥟</div>
+            <h1>Бабушкин бизнес</h1>
+            <p>Баба Галя разогревает духовку...</p>
+            <div class="loading-bar">
+                <div class="loading-fill"></div>
+            </div>
+        </div>
+    </div>
+    <div id="darkLayer"></div>
+    <div id="eventBar" class="event-bar">👵 Добро пожаловать в Бабушкин бизнес!</div>
+    
+    <main class="game-wrapper">
+        <section class="hud">
+            <div class="hud-card">
+                <div class="hud-icon">💰</div>
+                <div>
+                    <div class="hud-label">Деньги</div>
+                    <div class="hud-value"><span id="money">0</span> ₽</div>
+                </div>
+            </div>
+            <div class="hud-card">
+                <div class="hud-icon">🥟</div>
+                <div>
+                    <div class="hud-label">Пирожки</div>
+                    <div class="hud-value"><span id="pies">0</span></div>
+                </div>
+            </div>
+            <div class="hud-card">
+                <div class="hud-icon">⭐</div>
+                <div>
+                    <div class="hud-label">Репутация</div>
+                    <div class="hud-value"><span id="rep">0</span></div>
+                </div>
+            </div>
+            <div class="hud-card">
+                <div class="hud-icon">🐈</div>
+                <div>
+                    <div class="hud-label">Кот</div>
+                    <div class="hud-value"><span id="catsCaught">0</span></div>
+                    <div id="catStatus" class="small-status">Воришка</div>
+                </div>
+            </div>
+            <div class="hud-card">
+                <div class="hud-icon" id="dayTimeIcon">🌅</div>
+                <div>
+                    <div class="hud-label">Время суток</div>
+                    <div class="hud-value" id="dayTimeText">Утро</div>
+                </div>
+            </div>
+        </section>
+
+        <section class="road-panel">
+            <div class="road-line"></div>
+            <div class="road-stage" id="roadKitchen"><div class="road-icon">🏠</div><div class="road-name">Кухня</div></div>
+            <div class="road-stage" id="roadStall"><div class="road-icon">🥟</div><div class="road-name">Ларёк</div></div>
+            <div class="road-stage" id="roadCafe"><div class="road-icon">☕</div><div class="road-name">Кафе</div></div>
+            <div class="road-stage" id="roadRestaurant"><div class="road-icon">🍽</div><div class="road-name">Ресторан</div></div>
+            <div class="road-stage" id="roadEmpire"><div class="road-icon">🏰</div><div class="road-name">Империя</div></div>
+            <div id="roadGrandma">👵</div>
+        </section>
+
+        <section id="nextStagePanel">
+            <h3>🎯 Следующая цель</h3>
+            <div id="nextStageName">🥟 Ларёк</div>
+            <div class="progress-title">💰 Деньги</div>
+            <div class="progress-wrap"><div id="moneyProgress" class="progress-fill"></div></div>
+            <div id="nextMoney" class="progress-text">0 / 500 ₽</div>
+            <div class="progress-title">⭐ Репутация</div>
+            <div class="progress-wrap"><div id="repProgress" class="progress-fill rep"></div></div>
+            <div id="nextRep" class="progress-text">0 / 5</div>
+        </section>
+
+        <section class="icon-menu">
+            <button class="menu-icon" data-open="shopModal">🛒<span>Магазин</span></button>
+            <button class="menu-icon" data-open="ordersModal">🧺<span>Заказы</span></button>
+            <button class="menu-icon" data-open="dailyTasksModal">📅<span>Задания дня</span></button>
+            <button class="menu-icon" data-open="questsModal">📖<span>Поручения</span></button>
+            <button class="menu-icon" data-open="achievementsModal">🏆<span>Достижения</span></button>
+            <button class="menu-icon" data-open="recipesModal">🥟<span>Рецепты</span></button>
+            <button class="menu-icon" data-open="newsModal">📰<span>Газета</span></button>
+            <button class="menu-icon" data-open="helpersModal">👥<span>Помощники</span></button>
+            <button class="menu-icon" data-open="howToPlayModal">❔<span>Как играть</span></button>
+            <div class="menu-row">
+    <button id="soundButton" class="menu-icon" type="button">
+        🔊<span>Звук</span>
+    </button>
+
+    <button id="pauseButton" class="menu-icon" type="button">
+        ⏸<span>Пауза</span>
+    </button>
+</div>
+        </section>
+
+        <section class="main-area">
+            <img id="grandma" class="grandma" src="assets/baba_galya.png" alt="Баба Галя">
+            <div class="action-panel">
+                <div id="currentRecipeBadge">
+                    Сейчас печём: 🥔 с картошкой
+                </div>
+                <img id="pieButton" class="pie-button" src="assets/pie_button.png" alt="Испечь пирожок">
+                <img id="newLifeButton" class="new-life-button" src="assets/new_life_button.png" alt="Новая жизнь">
+            </div>
+        </section>
+    </main>
+
+    <!-- Модальные окна -->
+    <div id="shopModal" class="modal">
+        <div class="modal-window">
+            <button class="modal-close" data-close="shopModal">✖</button>
+            <h2>🛒 Магазин улучшений</h2>
+            <div id="shopGrid" class="shop-grid"></div>
+        </div>
+    </div>
+
+    <div id="ordersModal" class="modal">
+        <div class="modal-window">
+            <button class="modal-close" data-close="ordersModal">✖</button>
+            <h2>🧺 Заказы от жителей</h2>
+            <div id="orderCard" class="order-card">
+                <h3 id="orderPerson">👵 Житель города</h3>
+                <p id="orderText">Скоро появится новый заказ...</p>
+                <div class="order-info">Нужно: <span id="orderNeed">0</span> 🥟</div>
+                <div class="order-info">Награда: <span id="orderReward">0</span> ₽ и <span id="orderRep">0</span> ⭐</div>
+                <button id="completeOrderButton" type="button">✅ Выполнить заказ</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="questsModal" class="modal">
+        <div class="modal-window">
+            <button class="modal-close" data-close="questsModal">✖</button>
+            <h2>📖 Книга поручений</h2>
+            <div id="questList"></div>
+            <button id="claimQuestReward" type="button">🎁 Забрать общий подарок</button>
+        </div>
+    </div>
+
+    <div id="achievementsModal" class="modal">
+        <div class="modal-window">
+            <button class="modal-close" data-close="achievementsModal">✖</button>
+            <h2>🏆 Достижения</h2>
+            <div id="achievementList"></div>
+        </div>
+    </div>
+
+    <div id="recipesModal" class="modal">
+        <div class="modal-window">
+            <button class="modal-close" data-close="recipesModal">✖</button>
+            <h2>🥟 Рецепты пирожков</h2>
+            <div id="recipeList" class="recipe-list"></div>
+        </div>
+    </div>
+
+    <div id="newsModal" class="modal">
+        <div class="modal-window">
+            <button class="modal-close" data-close="newsModal">✖</button>
+            <h2>📰 Газета города</h2>
+            <div id="newsList" class="news-list"></div>
+        </div>
+    </div>
+
+    <div id="helpersModal" class="modal">
+        <div class="modal-window">
+            <button class="modal-close" data-close="helpersModal">✖</button>
+            <h2>👥 Помощники Бабы Гали</h2>
+            <p class="modal-subtitle">Нанимай помощников, чтобы они приносили деньги каждую секунду.</p>
+            <div id="helperList" class="helper-list"></div>
+        </div>
+    </div>
+
+    <div id="howToPlayModal" class="modal">
+        <div class="modal-window how-to-play-window">
+            <button class="modal-close" data-close="howToPlayModal">✖</button>
+            <h2>❔ Как играть</h2>
+            <div class="how-to-play-list">
+                <div class="how-step">
+                    <div class="how-icon">🥟</div>
+                    <div><h3>1. Пеки пирожки</h3><p>Нажимай на кнопку “Испечь пирожок”, чтобы Баба Галя готовила пирожки.</p></div>
+                </div>
+                <div class="how-step">
+                    <div class="how-icon">💰</div>
+                    <div><h3>2. Зарабатывай деньги</h3><p>Готовые пирожки постепенно покупают жители. За продажи ты получаешь деньги.</p></div>
+                </div>
+                <div class="how-step">
+                    <div class="how-icon">🧺</div>
+                    <div><h3>3. Выполняй заказы</h3><p>Открывай раздел “Заказы” и отдавай нужное количество пирожков за награду.</p></div>
+                </div>
+                <div class="how-step">
+                    <div class="how-icon">🛒</div>
+                    <div><h3>4. Покупай улучшения</h3><p>Улучшения помогают продавать пирожки дороже и быстрее развивать бизнес.</p></div>
+                </div>
+                <div class="how-step">
+                    <div class="how-icon">👥</div>
+                    <div><h3>5. Нанимай помощников</h3><p>Помощники автоматически помогают Бабе Гале печь пирожки.</p></div>
+                </div>
+                <div class="how-step">
+                    <div class="how-icon">🐈</div>
+                    <div><h3>6. Лови кота</h3><p>Кот-воришка может украсть сосиски. Успей нажать на него и получи бонус.</p></div>
+                </div>
+                <div class="how-step">
+                    <div class="how-icon">👑</div>
+                    <div><h3>7. Выполняй VIP-заказы</h3><p>VIP-гости дают крупные заказы и большие награды за пирожки.</p></div>
+                </div>
+                <div class="how-step">
+                    <div class="how-icon">🏰</div>
+                    <div><h3>8. Открой империю</h3><p>Развивай бизнес от кухни до настоящей пирожковой империи Бабы Гали.</p></div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <img id="cat" src="assets/cat.png" alt="Кот-воришка">
+
+    <div id="vipPopup" class="vip-popup">
+        <div class="vip-window">
+            <div class="vip-avatar-wrap">
+                <img id="vipGuestAvatar" class="vip-avatar" src="" alt="VIP-гость">
+            </div>
+            <h2 id="vipGuestName">VIP-гость</h2>
+            <p id="vipGuestText" class="vip-text">У меня для Бабы Гали особый заказ.</p>
+            <div class="vip-info">Нужно: <span id="vipNeedPies">0</span> 🥟</div>
+            <div class="vip-info">Награда: <span id="vipRewardMoney">0</span> ₽ и <span id="vipRewardRep">0</span> ⭐</div>
+            <div class="vip-actions">
+                <button id="vipAcceptButton" type="button">✅ Выполнить заказ</button>
+                <button id="vipDeclineButton" type="button">❌ Отказать</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="achievementPopup" class="achievement-popup">
+        <div class="achievement-popup-window">
+            <button id="achievementPopupClose" class="achievement-popup-close" type="button">✖</button>
+            <div id="achievementPopupIcon" class="achievement-popup-icon">🏆</div>
+            <h2>Достижение получено!</h2>
+            <h3 id="achievementPopupTitle">Первый пирожок</h3>
+            <p id="achievementPopupText">Награда получена.</p>
+        </div>
+    </div>
+
+    <div id="catRewardPopup" class="modal">
+        <div class="modal-window cat-reward-window">
+            <h2>🐈 Кот пойман!</h2>
+            <p id="catRewardText">Баба Галя поймала кота. Хочешь получить награду?</p>
+            <div class="cat-reward-actions">
+                <button id="catRewardAdButton" type="button">🎬 Получить награду за рекламу</button>
+                <button id="catRewardSkipButton" type="button">❌ Продолжить без награды</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="notEnoughMoneyPopup" class="not-enough-money-popup">
+        <div class="not-enough-money-window">
+            <div class="not-enough-money-icon">💸</div>
+            <h2>Не хватает денег!</h2>
+            <p id="notEnoughMoneyText">Для покупки помощника нужно заработать ещё немного денег.</p>
+            <button id="notEnoughMoneyClose" type="button">Хорошо, заработаю ещё</button>
+        </div>
+    </div>
+
+    <div id="startScreen" class="start-screen">
+        <div class="start-window">
+            <div class="start-icon">👵🥟</div>
+            <h1>Бабушкин бизнес</h1>
+            <p>Помоги Бабе Гале пройти путь от домашней кухни до настоящей пирожковой империи!</p>
+            <div class="start-buttons">
+                <button id="startGameButton" type="button">▶ Играть</button>
+                <button id="startHowToPlayButton" type="button">❔ Как играть</button>
+            </div>
+        </div>
+    </div>
+
+<div id="pauseModal" class="pause-modal">
+    <div class="pause-window">
+        <div class="pause-icon">😴</div>
+
+        <h2>Игра на паузе</h2>
+
+        <p>
+            Баба Галя отдыхает.<br>
+            Нажми “Продолжить”, чтобы вернуться к пирожкам.
+        </p>
+
+        <button id="resumeButton" type="button">
+            ▶ Продолжить
+        </button>
+    </div>
+</div>    
+<div id="newLifeChoicePopup" class="modal">
+        <div class="modal-window new-life-choice-window">
+            <h2>🔁 Новая жизнь</h2>
+            <p>Начать игру заново? Весь текущий прогресс будет сброшен.</p>
+            <div class="new-life-gift-box">
+                🎁 За рекламу можно начать новую жизнь с подарком:<br>
+                <b>+500 ₽, +50 🥟 и +3 ⭐</b>
+            </div>
+            <div class="new-life-choice-actions">
+                <button id="newLifeNormalButton" type="button">🔁 Обычная новая жизнь</button>
+                <button id="newLifeAdButton" type="button">🎬 Новая жизнь с подарком за рекламу</button>
+                <button id="newLifeCancelButton" type="button">❌ Отмена</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="finalGoalPopup" class="final-goal-popup">
+        <div class="final-goal-window">
+            <button id="finalGoalClose" class="final-goal-close" type="button">✖</button>
+            <div class="final-goal-crown">👑</div>
+            <h2>Победа!</h2>
+            <h3>Империя пирожков построена!</h3>
+            <p class="final-goal-text">
+                Баба Галя прошла путь от маленькой кухни до настоящей пирожковой империи.
+                Теперь о её пирожках говорит весь город!
+            </p>
+            <div class="final-stats">
+                <div class="final-stat-card"><div class="final-stat-icon">🥟</div><div class="final-stat-label">Пирожков</div><div id="finalPies" class="final-stat-value">0</div></div>
+                <div class="final-stat-card"><div class="final-stat-icon">💰</div><div class="final-stat-label">Заработано</div><div id="finalMoney" class="final-stat-value">0 ₽</div></div>
+                <div class="final-stat-card"><div class="final-stat-icon">⭐</div><div class="final-stat-label">Репутация</div><div id="finalRep" class="final-stat-value">0</div></div>
+                <div class="final-stat-card"><div class="final-stat-icon">🐈</div><div class="final-stat-label">Котов поймано</div><div id="finalCats" class="final-stat-value">0</div></div>
+            </div>
+            <div class="final-goal-message">👵 «Вот это да, внучок! Теперь у нас не кухня, а настоящая легенда!»</div>
+            <button id="finalNewLifeButton" class="final-new-life-button" type="button">🔁 Начать новую жизнь</button>
+        </div>
+    </div>
+
+    <div id="tutorialPopup" class="tutorial-popup">
+        <div class="tutorial-window">
+            <div id="tutorialIcon" class="tutorial-icon">👵</div>
+            <h2 id="tutorialTitle">Обучение</h2>
+            <p id="tutorialText">Добро пожаловать в игру!</p>
+            <div class="tutorial-progress"><span id="tutorialStepText">Шаг 1 из 5</span></div>
+            <button id="tutorialButton" type="button">Понятно</button>
+            <button id="tutorialSkipButton" type="button">Пропустить обучение</button>
+        </div>
+    </div>
+
+    <div id="dailyTasksModal" class="modal">
+        <div class="modal-window">
+            <button class="modal-close" data-close="dailyTasksModal">✖</button>
+            <h2>📅 Задания дня</h2>
+            <p class="modal-subtitle">Выполняй задания дня и получай приятные награды.</p>
+            <div id="dailyTasksList" class="daily-tasks-list"></div>
+        </div>
+    </div>
+
+    <div id="soundSettingsModal" class="modal">
+        <div class="modal-window">
+            <button class="modal-close" data-close="soundSettingsModal">✖</button>
+            <h2>🔊 Настройки звука</h2>
+            <button id="soundToggleButton" type="button">🔊 Звук включён</button>
+            <div class="sound-setting">
+                <label for="musicVolumeSlider">🎵 Фоновая музыка: <span id="musicVolumeValue">25</span>%</label>
+                <input id="musicVolumeSlider" type="range" min="0" max="100" value="25">
+            </div>
+            <div class="sound-setting">
+                <label for="effectsVolumeSlider">✨ Звуки событий: <span id="effectsVolumeValue">60</span>%</label>
+                <input id="effectsVolumeSlider" type="range" min="0" max="100" value="60">
+            </div>
+        </div>
+    </div>
+
+    
+
+    <div id="vipNeedPiesAdPopup" class="modal">
+        <div class="modal-window vip-ad-window">
+            <h2>👑 Не хватает пирожков для VIP-заказа!</h2>
+            <p id="vipNeedPiesAdText">Для VIP-клиента нужно срочно допечь пирожки.</p>
+            <div class="vip-ad-actions">
+                <button id="vipWatchAdButton" type="button">🎬 Посмотреть рекламу и срочно допечь пирожки</button>
+                <button id="vipAdDeclineButton" type="button">❌ Отказаться</button>
+            </div>
+        </div>
+    </div>
+
+    <div id="notEnoughPiesPopup" class="not-enough-popup">
+        <div class="not-enough-window">
+            <div class="not-enough-icon">🥟</div>
+            <h2>Не хватает пирожков!</h2>
+            <p id="notEnoughPiesText">Для этого заказа нужно испечь ещё пирожки.</p>
+            <button id="notEnoughPiesClose" type="button">Хорошо, испеку ещё</button>
+        </div>
+    </div>
+
+    <!-- Аудио элементы -->
+    <audio id="backgroundMusic" loop><source src="assets/music/background.mp3" type="audio/mpeg"></audio>
+    <audio id="pieSound" preload="auto"><source src="assets/sounds/pie_click.mp3" type="audio/mpeg"></audio>
+    <audio id="vipSound" preload="auto"><source src="assets/sounds/vip_appear.mp3" type="audio/mpeg"></audio>
+    <audio id="catSound" preload="auto"><source src="assets/sounds/cat_appear.mp3" type="audio/mpeg"></audio>
+    <audio id="achievementSound" preload="auto"><source src="assets/sounds/new_achievement.mp3" type="audio/mpeg"></audio>
+    <audio id="buySound" preload="auto"><source src="assets/sounds/buy.mp3" type="audio/mpeg"></audio>
+    <audio id="orderSound" preload="auto"><source src="assets/sounds/order_complete.mp3" type="audio/mpeg"></audio>
+    <audio id="dailyRewardSound" preload="auto"><source src="assets/sounds/buy.mp3" type="audio/mpeg"></audio>
+    <audio id="newsSound" preload="auto"><source src="assets/sounds/newspaper.mp3" type="audio/mpeg"></audio>
+    <audio id="newLifeSound" preload="auto"><source src="assets/sounds/new_life.mp3" type="audio/mpeg"></audio>
+
+    <script src="script.js"></script>
+
+</body>
+</html>
