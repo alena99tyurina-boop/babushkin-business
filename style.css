@@ -3190,3 +3190,96 @@ img{
         max-height:78dvh;
     }
 }
+/* ===== ИСПРАВЛЕНИЕ ДЛЯ ТЕЛЕФОНА: СЛЕДУЮЩАЯ ЦЕЛЬ ПОД БАБУШКОЙ ===== */
+
+@media(max-width:700px){
+
+    .game-wrapper{
+        display:flex !important;
+        flex-direction:column !important;
+        align-items:center !important;
+        padding-top:86px !important;
+        padding-bottom:120px !important;
+    }
+
+    .hud{
+        order:1 !important;
+    }
+
+    .road-panel{
+        order:2 !important;
+    }
+
+    .main-area{
+        order:3 !important;
+        margin-top:8px !important;
+        margin-bottom:10px !important;
+        min-height:auto !important;
+    }
+
+    #nextStagePanel{
+        order:4 !important;
+        margin-top:8px !important;
+        margin-bottom:18px !important;
+        width:92vw !important;
+        max-width:420px !important;
+        position:relative !important;
+        z-index:3 !important;
+    }
+
+    .icon-menu{
+        order:5 !important;
+    }
+}
+/* ===== ИСПРАВЛЕНИЕ ФОНА ДЛЯ ТЕЛЕФОНА И ПЛАНШЕТА ===== */
+
+/* На компьютере фон оставляем красивым на весь экран */
+#background{
+    background-size:cover !important;
+    background-position:center center !important;
+    background-repeat:no-repeat !important;
+    background-color:#2b1b14 !important;
+}
+
+/* На планшетах фон меньше обрезается */
+@media(max-width:1024px){
+
+    #background{
+        background-size:contain !important;
+        background-position:center center !important;
+        background-repeat:no-repeat !important;
+        background-color:#2b1b14 !important;
+    }
+
+    #darkLayer{
+        background:rgba(0,0,0,.22) !important;
+    }
+}
+
+/* На телефоне показываем фон полностью, без сильного приближения */
+@media(max-width:700px){
+
+    #background{
+        background-size:contain !important;
+        background-position:center top !important;
+        background-repeat:no-repeat !important;
+        background-color:#2b1b14 !important;
+    }
+
+    #darkLayer{
+        background:rgba(0,0,0,.18) !important;
+    }
+
+    body.time-night #darkLayer{
+        background:rgba(0,0,0,.28) !important;
+    }
+}
+
+/* Если телефон повернули горизонтально — фон снова можно растянуть красиво */
+@media(max-height:500px) and (orientation:landscape){
+
+    #background{
+        background-size:cover !important;
+        background-position:center center !important;
+    }
+}
