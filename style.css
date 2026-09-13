@@ -2823,3 +2823,370 @@ body::after{
 #vipNeedPiesAdPopup{
     z-index:1000001 !important;
 }
+/* ===== УНИВЕРСАЛЬНАЯ АДАПТАЦИЯ: ПК + ПЛАНШЕТ + ТЕЛЕФОН ===== */
+
+html,
+body{
+    width:100%;
+    min-height:100%;
+    overflow-x:hidden;
+}
+
+body{
+    min-height:100dvh;
+}
+
+img{
+    max-width:100%;
+    height:auto;
+}
+
+/* Важное исправление: все всплывающие окна должны быть поверх игры */
+.modal,
+.vip-popup,
+.not-enough-popup,
+.not-enough-money-popup,
+.achievement-popup,
+.start-screen,
+.pause-modal,
+.tutorial-popup,
+.final-goal-popup{
+    position:fixed !important;
+}
+
+.modal,
+.vip-popup,
+.not-enough-popup,
+.not-enough-money-popup,
+.achievement-popup,
+.pause-modal,
+.tutorial-popup,
+.final-goal-popup{
+    inset:0 !important;
+}
+
+/* Основной контейнер */
+.game-wrapper{
+    width:100%;
+    max-width:1200px;
+    min-height:100dvh;
+    margin:0 auto;
+    padding:90px 18px 40px;
+}
+
+/* Верхняя строка уведомлений */
+.event-bar{
+    width:calc(100% - 28px);
+    max-width:760px;
+    top:calc(12px + env(safe-area-inset-top));
+    font-size:clamp(15px, 2.2vw, 20px);
+    padding:12px 16px;
+    z-index:1000;
+}
+
+/* Карточки денег / пирожков / репутации */
+.hud{
+    display:grid;
+    grid-template-columns:repeat(auto-fit,minmax(145px,1fr));
+    gap:12px;
+    width:100%;
+    max-width:980px;
+    margin-left:auto;
+    margin-right:auto;
+}
+
+.hud-card{
+    width:100%;
+    min-height:76px;
+}
+
+/* Карта прогресса */
+.road-panel{
+    width:100%;
+    max-width:900px;
+    overflow:visible;
+}
+
+.road-name{
+    font-size:clamp(10px, 1.7vw, 14px);
+}
+
+/* Главная зона */
+.main-area{
+    width:100%;
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    gap:clamp(18px, 4vw, 40px);
+    flex-wrap:wrap;
+}
+
+.grandma{
+    width:clamp(180px, 28vw, 260px);
+    max-width:80vw;
+}
+
+.action-panel{
+    width:min(100%,420px);
+}
+
+.pie-button,
+.new-life-button{
+    width:clamp(220px, 45vw, 360px);
+    max-width:86vw;
+}
+
+/* Окна */
+.modal-window,
+.vip-window,
+.pause-window,
+.tutorial-window,
+.final-goal-window,
+.not-enough-window,
+.not-enough-money-window,
+.achievement-popup-window{
+    max-width:94vw;
+    max-height:86dvh;
+    overflow-y:auto;
+}
+
+/* Меню на компьютере */
+.icon-menu{
+    position:fixed !important;
+    left:18px !important;
+    top:50% !important;
+    bottom:auto !important;
+    transform:translateY(-50%) !important;
+    z-index:10000 !important;
+    display:flex !important;
+    flex-direction:column !important;
+    gap:10px !important;
+    max-width:none !important;
+    overflow:visible !important;
+    padding:0 !important;
+}
+
+.menu-row{
+    display:flex !important;
+    flex-direction:row !important;
+    gap:8px !important;
+}
+
+.menu-icon{
+    width:68px !important;
+    height:68px !important;
+    min-height:68px !important;
+    flex:0 0 auto;
+}
+
+/* Планшеты */
+@media(max-width:1024px){
+
+    .game-wrapper{
+        padding:86px 14px 118px;
+    }
+
+    .icon-menu{
+        left:50% !important;
+        top:auto !important;
+        bottom:calc(10px + env(safe-area-inset-bottom)) !important;
+        transform:translateX(-50%) !important;
+        flex-direction:row !important;
+        gap:8px !important;
+        max-width:calc(100vw - 16px) !important;
+        overflow-x:auto !important;
+        overflow-y:hidden !important;
+        padding:6px !important;
+        border-radius:22px;
+        background:rgba(40,24,14,.35);
+        backdrop-filter:blur(10px);
+    }
+
+    .icon-menu::-webkit-scrollbar{
+        display:none;
+    }
+
+    .menu-icon{
+        width:64px !important;
+        height:64px !important;
+        min-height:64px !important;
+        font-size:27px !important;
+        border-radius:20px !important;
+    }
+
+    .menu-icon span{
+        font-size:9px !important;
+    }
+}
+
+/* Телефоны */
+@media(max-width:700px){
+
+    .game-wrapper{
+        padding:84px 10px 112px;
+    }
+
+    .hud{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+        gap:8px;
+    }
+
+    .hud-card{
+        min-height:68px;
+        padding:8px;
+        border-radius:18px;
+    }
+
+    .hud-icon{
+        font-size:26px;
+    }
+
+    .hud-label{
+        font-size:12px;
+    }
+
+    .hud-value{
+        font-size:18px;
+    }
+
+    .road-panel{
+        height:96px;
+        margin:16px auto;
+    }
+
+    .road-icon{
+        width:40px;
+        height:40px;
+        font-size:22px;
+    }
+
+    #roadGrandma{
+        font-size:30px;
+        top:-12px;
+    }
+
+    .main-area{
+        flex-direction:column;
+        gap:12px;
+        margin-top:10px;
+    }
+
+    .grandma{
+        width:190px;
+        max-width:68vw;
+    }
+
+    .pie-button,
+    .new-life-button{
+        width:270px;
+        max-width:82vw;
+    }
+
+    #currentRecipeBadge{
+        max-width:88vw;
+        font-size:15px;
+        padding:10px 14px;
+    }
+
+    .modal-window,
+    .vip-window,
+    .pause-window,
+    .tutorial-window,
+    .final-goal-window,
+    .not-enough-window,
+    .not-enough-money-window,
+    .achievement-popup-window{
+        width:94vw;
+        max-height:82dvh;
+        padding:18px 14px;
+        border-radius:22px;
+    }
+
+    .icon-menu{
+        bottom:calc(8px + env(safe-area-inset-bottom)) !important;
+    }
+
+    .menu-icon{
+        width:58px !important;
+        height:58px !important;
+        min-height:58px !important;
+        font-size:24px !important;
+        border-radius:18px !important;
+    }
+
+    .menu-icon span{
+        font-size:8px !important;
+    }
+}
+
+/* Очень маленькие телефоны */
+@media(max-width:420px){
+
+    .event-bar{
+        font-size:14px;
+        padding:10px 12px;
+    }
+
+    .hud{
+        grid-template-columns:repeat(2,minmax(0,1fr));
+    }
+
+    .grandma{
+        width:170px;
+    }
+
+    .pie-button,
+    .new-life-button{
+        width:240px;
+    }
+
+    .road-name{
+        font-size:9px;
+    }
+
+    .menu-icon{
+        width:54px !important;
+        height:54px !important;
+        min-height:54px !important;
+        font-size:22px !important;
+    }
+}
+
+/* Телефон в горизонтальном положении */
+@media(max-height:500px) and (orientation:landscape){
+
+    .game-wrapper{
+        padding-top:70px;
+        padding-bottom:86px;
+    }
+
+    .hud{
+        grid-template-columns:repeat(5,minmax(90px,1fr));
+    }
+
+    .hud-card{
+        min-height:58px;
+    }
+
+    .grandma{
+        width:145px;
+    }
+
+    .pie-button,
+    .new-life-button{
+        width:220px;
+    }
+
+    .road-panel{
+        height:76px;
+        margin:8px auto;
+    }
+
+    .modal-window,
+    .vip-window,
+    .pause-window,
+    .tutorial-window,
+    .final-goal-window{
+        max-height:78dvh;
+    }
+}
